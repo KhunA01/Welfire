@@ -49,7 +49,7 @@ pub fn update_camera_position(
         }
 
         if delta != Vec2::ZERO {
-            let sensitivity: f32 = 0.003;
+            let sensitivity: f32 = 0.002;
             controller.yaw -= delta.x * sensitivity;
             controller.pitch -= delta.y * sensitivity;
             controller.pitch = controller.pitch.clamp(-1.2, 1.2);
@@ -62,10 +62,11 @@ pub fn update_camera_position(
     let pivot_point: Vec3 = player_transform.translation + Vec3::new(0.0, controller.pivot_y, 0.0);
     let local_offset: Vec3 = Vec3::new(controller.offset_x, 0.0, controller.current_distance);
     let final_position: Vec3 = pivot_point + (rotation * local_offset);
-    let follow_speed: f32 = 100.0;
+    let follow_speed: f32 = 50.0;
+    // let t: f32 = 1.0 - (-follow_speed * time.delta_secs()).exp();
     cam_transform.translation = cam_transform
         .translation
-        .lerp(final_position, time.delta_secs() * follow_speed);
+        .lerp(final_position,  follow_speed * time.delta_secs());
     // cam_transform.translation = final_position;
 }
 

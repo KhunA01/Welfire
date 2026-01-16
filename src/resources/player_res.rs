@@ -5,6 +5,8 @@ pub struct PlayerAnimations {
     pub idle: Handle<AnimationClip>,
     pub fw_walk: Handle<AnimationClip>,
     pub bw_walk: Handle<AnimationClip>,
+    pub left_walk: Handle<AnimationClip>,
+    pub right_walk: Handle<AnimationClip>,
     pub fw_run: Handle<AnimationClip>,
     pub bw_run: Handle<AnimationClip>,
     pub run_left: Handle<AnimationClip>,

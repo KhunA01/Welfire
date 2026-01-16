@@ -16,7 +16,7 @@ impl Plugin for SystemsPlugins {
         app
             .add_systems(PreStartup, load_player_assets)
             .add_systems(Startup, (spawn_world, spawn_player))
-            .add_systems(Update, (toggle_cursor, move_player))
+            .add_systems(Update, (toggle_cursor, move_player, scene_animation, animate_player))
             .add_systems(PostUpdate, update_camera_position);
     }
 }
