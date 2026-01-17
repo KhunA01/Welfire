@@ -15,6 +15,7 @@ pub struct PlayerAnimations {
     pub attack: Handle<AnimationClip>,
     pub slash: Handle<AnimationClip>,
     pub kick: Handle<AnimationClip>,
+    pub crouch: Handle<AnimationClip>
 }
 
 #[derive(Resource, Default)]

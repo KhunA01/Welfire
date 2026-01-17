@@ -1,4 +1,4 @@
-use std::{time::Duration};
+use std::time::Duration;
 
 use bevy::{
     prelude::*,
@@ -31,6 +31,11 @@ pub fn spawn_player(
     let bw_walk_idx = graph.add_clip(animations.bw_walk.clone(), 1.0, graph.root);
     let left_walk_idx = graph.add_clip(animations.left_walk.clone(), 1.0, graph.root);
     let right_walk_idx = graph.add_clip(animations.right_walk.clone(), 1.0, graph.root);
+    let fw_run_idx = graph.add_clip(animations.fw_run.clone(), 1.0, graph.root);
+    let bw_run_idx = graph.add_clip(animations.bw_run.clone(), 1.0, graph.root);
+    let slash_idx = graph.add_clip(animations.slash.clone(), 1.0, graph.root);
+    let crouch_idx = graph.add_clip(animations.crouch.clone(), 1.0, graph.root);
+
     let graph_handle: Handle<AnimationGraph> = graphs.add(graph);
 
     commands.spawn((
@@ -44,6 +49,10 @@ pub fn spawn_player(
             bw_walk: bw_walk_idx,
             left_walk: left_walk_idx,
             right_walk: right_walk_idx,
+            fw_run: fw_run_idx,
+            bw_run: bw_run_idx,
+            slash: slash_idx,
+            crouch: crouch_idx,
         },
     ));
 }
@@ -117,18 +126,37 @@ pub fn animate_player(
         &PlayerAnimationIndices,
     )>,
     input: Res<ButtonInput<KeyCode>>,
+    mouse: Res<ButtonInput<MouseButton>>
 ) {
     for (mut player, mut transitions, indices) in &mut players {
         let mut target_animation = indices.idle;
 
-        if input.pressed(KeyCode::KeyW) {
-            target_animation = indices.fw_walk;
-        } else if input.pressed(KeyCode::KeyS) {
-            target_animation = indices.bw_walk;
-        } else if input.pressed(KeyCode::KeyA) {
-            target_animation = indices.left_walk;
-        } else if input.pressed(KeyCode::KeyD) {
-            target_animation = indices.right_walk;
+        let is_runing: bool = input.pressed(KeyCode::ShiftLeft);
+
+        if is_runing {
+            if input.pressed(KeyCode::KeyW) {
+                target_animation = indices.fw_run;
+            } else if input.pressed(KeyCode::KeyS) {
+                target_animation = indices.bw_run;
+            }
+        } else {
+            if input.pressed(KeyCode::KeyW) {
+                target_animation = indices.fw_walk;
+            } else if input.pressed(KeyCode::KeyS) {
+                target_animation = indices.bw_walk;
+            } else if input.pressed(KeyCode::KeyA) {
+                target_animation = indices.left_walk;
+            } else if input.pressed(KeyCode::KeyD) {
+                target_animation = indices.right_walk;
+            }
+        }
+
+        if input.pressed(KeyCode::ControlLeft) {
+            target_animation = indices.crouch;
+        }
+
+        if mouse.just_pressed(MouseButton::Left) {
+            target_animation = indices.slash;
         }
 
         if !player.is_playing_animation(target_animation) {
